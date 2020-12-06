@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "net-snmp": "^2.9.8"
+    "express": "^4.17.1",
+    "net-snmp": "^2.9.8",
+    "socket.io": "^3.0.3"
   }
 }
