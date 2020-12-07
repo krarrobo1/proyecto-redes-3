@@ -42,7 +42,7 @@ module.exports = class SessionManager {
 
         function doneCb(error) {
             let n = name === 'windows' ? 8 : 4;
-            io.sockets.in(name).emit('cpu', { name, cpuUsagePercentage: (aux / n) });
+            io.sockets.in(name).emit('cpu', { name, cpuUsagePercentage: (aux / 4) });
             if (error)
                 console.error(error.toString());
         }

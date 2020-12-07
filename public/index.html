@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 
     <title>SMNP Demo app</title>
 </head>
@@ -34,6 +35,61 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div>
+        <h1 id="title" class="mx-5 my-4 text-secondary "></h1>
+
+        <div class="container">
+            <img src="assets/pc.png" alt="PC" style="width: 40%;" class="rounded mx-auto d-block">
+            <h1 class="text-center my-2 text-primary" id="name">PC Name</h1>
+        </div>
+        <div class="container alert alert-success my-4">
+            <div class="my-4 row">
+
+                <div class="w-100"></div>
+                <div class="col">
+                    <h6 class="secondary">Descripción
+                        <p id="description" class="mx-1 text-primary">Intel</p>
+                    </h6>
+                </div>
+                <div class="w-100"></div>
+                <div class="col">
+                    <h6>Servicios
+                        <p id="services" class="mx-1 text-primary">72</p>
+                    </h6>
+                </div>
+                <div class="col">
+                    <h6>Tiempo
+                        <p id="time" class="mx-1 text-primary">72 hora</p>
+                    </h6>
+                </div>
+                <div class="col">
+                    <h6>Memoria
+                        <p id="memory" class="mx-1 text-primary">16 GB</p>
+                    </h6>
+                </div>
+            </div>
+        </div>
+        <div class="my-4 container">
+            <div class="row">
+                <div class="col-2">
+                    <h6><strong>CPU</strong></h6>
+                </div>
+                <div class="col-10">
+                    <canvas id="chart1" width="320" height="80"></canvas>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-2">
+                    <h6><strong>RAM</strong></h6>
+                </div>
+                <div class="col-10">
+                    <canvas id="chart2" width="320" height="80"></canvas>
+                </div>
+            </div>
+
         </div>
     </div>
     <script src="socket.io/socket.io.js"></script>

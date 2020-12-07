@@ -10,7 +10,7 @@ http.listen(PORT, () => {
     // Ask every 5 seconds cpu percentage usage...
     setInterval(() => {
         SessionManager.getProcessorUsagePercent('ubuntu');
-        SessionManager.getMemoryUsage('ubuntu');
+        // SessionManager.getMemoryUsage('ubuntu');
         SessionManager.getProcessorUsagePercent('windows');
     }, 5000);
 
