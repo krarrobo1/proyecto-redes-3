@@ -1,15 +1,16 @@
 module.exports = {
     COMMUNITY_STRING: 'public',
     PORT: 3300,
-    devices: [{
+    devices: {
+        ubuntu: {
             ip: '127.0.0.1',
             community: 'public'
         },
-        {
+        windows: {
             ip: '192.168.1.25',
             community: 'public'
         }
-    ],
+    },
     oids: [{
             name: 'sysDescr',
             oid: '1.3.6.1.2.1.1.1.0',
@@ -22,7 +23,7 @@ module.exports = {
         },
         {
             name: 'sysName',
-            oid: '1.3.6.1.2.1.1.5',
+            oid: '1.3.6.1.2.1.1.5.0',
             description: "An administratively-assigned name for this managed node. By convention, this is the node's fully-qualified domain name. If the name is unknown, the value is the zero-length string."
         },
         {
@@ -34,11 +35,6 @@ module.exports = {
             name: 'totalRam',
             oid: '1.3.6.1.2.1.25.2.2.0',
             description: 'Total physical system RAM in kbytes'
-        },
-        {
-            name: 'usedRam',
-            oid: '1.3.6.1.2.1.25.2.3.1.6',
-            description: 'The amount of the storage represented by the entry that is allocated, in units.'
         }
     ]
 };

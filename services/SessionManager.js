@@ -1,77 +1,108 @@
-// const snmp = require("net-snmp");
+const snmp = require("net-snmp");
+const { io } = require('../app');
+const { devices, oids } = require("../config");
 
-// class SessionManager {
-//     constructor() {
-//         this.clients =
-//     }
-//     initSession() {
-//         snmp.createSession('localhost', 'public');
-//     }
-// }
+module.exports = class SessionManager {
 
+    static initSessions() {
+        for (const key in devices) {
+            if (devices.hasOwnProperty(key)) {
+                const device = devices[key];
+                device.session = snmp.createSession(device.ip, device.community);
+            }
+        }
+    }
 
+    static getClientData(name, cb) {
+        let oidsList = oids.map(elem => elem.oid);
+        let oidNames = oids.map(elem => elem.name);
+        devices[name].session.get(oidsList, (err, varbinds) => {
+            if (err) {
+                console.log(`ERROR: ${err}`);
+            } else {
+                let temp = {};
+                varbinds.forEach((element, idx) => {
+                    if (snmp.isVarbindError(element)) {
+                        console.log(snmp.varbindError(element));
+                    } else {
+                        if (element.value.byteLength) {
+                            element.value = element.value.toString();
+                        }
+                        temp[oidNames[idx]] = element.value;
+                    }
+                });
+                cb(temp);
+            }
+        });
+    }
 
+    static getProcessorUsagePercent(name) {
+        let oid = "1.3.6.1.2.1.25.3.3.1.2";
+        let aux = 0;
 
-// // let oids = ["1.3.6.1.2.1.1.1.0", "1.3.6.1.2.1.1.3.0", "1.3.6.1.2.1.1.7.0", "1.3.6.1.2.1.25.1.1.0", "1.3.6.1.2.1.25.1.5.0", "1.3.6.1.2.1.25.5.1.1.1.1"];
-
-// let oids = [
-//     "1.3.6.1.2.1.1.1.0",
-//     "1.3.6.1.2.1.1.3.0",
-//     "1.3.6.1.4.1.2021.9.1.7.1",
-//     "1.3.6.1.4.1.2021.9.1.9.1"
-// ]
-
-
-
-// function init() {
-//     return new Promise((resolve, reject) => {
-//         let results = [];
-//         session.get(oids, (err, varbinds) => {
-//             if (err) {
-//                 console.log("Err: ", err);
-//                 reject(err);
-//             } else {
-
-//                 varbinds.forEach(element => {
-//                     if (snmp.isVarbindError(element)) {
-//                         console.log(snmp.varbindError(element));
-//                     } else {
-//                         console.log(`${element.oid} => ${element.value}`);
-//                         results.push(element.value);
-//                     }
-//                 });
-//             }
-//         });
-//         session.close();
-//         resolve(results);
-//     })
-// }
-
-
-// // init().then((res) => {
-// //     console.log(res);
-// // }).catch(err => {
-// //     console.log(err);
-// // })
+        function doneCb(error) {
+            let n = name === 'windows' ? 8 : 4;
+            io.sockets.in(name).emit('cpu', { name, cpuUsagePercentage: (aux / n) });
+            if (error)
+                console.error(error.toString());
+        }
 
 
+        // CPU
+        function feedCb(varbinds) {
+            for (var i = 0; i < varbinds.length; i++) {
+                if (snmp.isVarbindError(varbinds[i]))
+                    console.error(snmp.varbindError(varbinds[i]));
+                else
+                    aux += varbinds[i].value;
+            }
+        }
+        devices[name].session.subtree(oid, feedCb, doneCb);
+    }
 
-// // let upTime = results[1];
+    static getMemoryUsage() {
+        let oid = '1.3.6.1.2.1.25.5.1.1.2';
+        let aux = 0;
+        let pn = 0;
 
-// // console.log(upTime);
 
-// // function toTime(tickTime) {
-// //     console.log(typeof(tickTime));
-// //     let secs, mins, hours, days;
+        function doneCb(error) {
+            io.sockets.in(name).emit('cpu', { name, cpuUsagePercentage: (aux / pn) });
+            if (error)
+                console.error(error.toString());
+        }
 
-// //     secs = (tickTime / 100);
-// //     mins = (tickTime / 6000);
-// //     hours = (tickTime / 360000);
-// //     days = (tickTime / 8640000);
 
-// //     console.log(`Sysuptime \nDays: ${days} Hours: ${hours} Mins: ${mins}, Secs: ${secs}`);
-// // }
+        // CPU
+        function feedCb(varbinds) {
+            for (var i = 0; i < varbinds.length; i++) {
+                if (snmp.isVarbindError(varbinds[i]))
+                    console.error(snmp.varbindError(varbinds[i]));
+                else {
+                    aux += varbinds[i].value;
+                    pn++;
+                }
 
-// // toTime(upTime);
+            }
+        }
+        devices[name].session.subtree(oid, feedCb, doneCb);
+    }
 
-// init();
+    static getMemoryUsage(name) {
+        let oids = ['1.3.6.1.4.1.2021.4.6.0'];
+        devices[name].session.get(oids, (err, varbinds) => {
+            if (err) {
+                console.log("Err: ", err);
+            } else {
+                varbinds.forEach(element => {
+                    if (snmp.isVarbindError(element)) {
+                        console.log(snmp.varbindError(element));
+                    } else {
+                        let result = element.value / 1000000;
+                        io.sockets.in('ubuntu').emit('memory', { name: 'ubuntu', memoryUsageGb: result });
+                    }
+                });
+            }
+        });
+    }
+}
