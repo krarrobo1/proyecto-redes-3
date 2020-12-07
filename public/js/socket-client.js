@@ -3,13 +3,13 @@
  */
 
 let socket = io();
-
 let devices = {};
 
 socket.on('connect', function() {
     console.log('Conectado al servidor');
 });
 
+ocultar();
 
 document.getElementById('ubuntu').addEventListener('click', () => {
     sendInfoRequest('ubuntu');
@@ -34,6 +34,7 @@ socket.on('memory', (data) => {
 
 
 function sendInfoRequest(name) {
+    mostrar();
     let req = {
         name
     };
@@ -77,8 +78,15 @@ function graphState(name, nameChart) {
                     stacked: true
                 }]
             },
-            //borderColor: { Color: 'rgba(244, 244, 244, 1)' },
-
         }
     });
+}
+
+
+function ocultar() {
+    document.getElementById('panel').style.display = 'none';
+}
+
+function mostrar() {
+    document.getElementById('panel').style.display = 'block';
 }
