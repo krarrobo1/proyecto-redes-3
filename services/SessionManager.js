@@ -1,6 +1,7 @@
 const snmp = require("net-snmp");
 const { io } = require('../app');
 const { devices, oids } = require("../config");
+const { timeTickConverter, kilobytesToGb } = require('../helpers/utils');
 
 module.exports = class SessionManager {
 
@@ -27,6 +28,12 @@ module.exports = class SessionManager {
                     } else {
                         if (element.value.byteLength) {
                             element.value = element.value.toString();
+                        }
+                        if (oidNames[idx] === 'sysUpTime') {
+                            element.value = timeTickConverter(element.value);
+                        }
+                        if (oidNames[idx] === 'totalRam') {
+                            element.value = kilobytesToGb(element.value);
                         }
                         temp[oidNames[idx]] = element.value;
                     }
