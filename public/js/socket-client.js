@@ -1,6 +1,7 @@
 /*
  * Socket.io Client
  */
+document.getElementById("panel").style.display = "none";
 
 let socket = io();
 let devices = {};
@@ -9,7 +10,7 @@ socket.on('connect', function() {
     console.log('Conectado al servidor');
 });
 
-ocultar();
+//ocultar('panel');
 
 document.getElementById('ubuntu').addEventListener('click', () => {
     sendInfoRequest('ubuntu');
@@ -19,61 +20,69 @@ document.getElementById('windows').addEventListener('click', () => {
 });
 
 // Event listeners...
+
+var data2 = [];
+var data3 = [];
+var num = 1;
+var cjs = document.getElementById("chart1").getContext("2d");
+var cjs2 = document.getElementById("chart2").getContext("2d");
+
 socket.on('cpu', (data) => {
     console.log(data);
-
-    //document.getElementById('valor').innerHTML = data.cpuUsagePercentage;
+    data2.push(data.cpuUsagePercentage);
+    data3.push(data2.length);
+    document.getElementById('cpu').innerHTML = '<strong>CPU</strong>';
+    graphState('Utilización - CPU %', data3, data2, cjs);
 });
 
-socket.on('memory', (data) => {
-    console.log(data);
-
-});
-
-
-
+function memoriUbuntu() {
+    socket.on('memory', (data) => {
+        console.log(data);
+        data2.push(data);
+        data3.push(data2.length);
+        document.getElementById('ram').innerHTML = '<strong>RAM<strong>';
+        graphState('Utilización - Memoria %', data3, data2, cjs2);
+    });
+}
 
 function sendInfoRequest(name) {
-    mostrar();
+    document.getElementById("title").innerHTML = 'SNMP SERVER - ' + name.toUpperCase();
+    mostrar('panel');
     let req = {
         name
     };
     socket.emit('infoRequest', req, (response) => {
         console.log(response);
         devices[name] = response;
-        elements(('<strong>SNMP SERVER'), response.sysDescr, response.sysUpTime, response.sysName, services, response.totalRam);
+        elements(response.sysDescr, response.sysUpTime, response.sysName, response.sysServices, response.totalRam);
     });
+    if (name == 'ubuntu') {
+        memoriUbuntu();
+    } else {
+        console.log('windows');
+    }
 }
 
-function elements(titulo, des, time, name, services, memory) {
-    document.getElementById("title").innerHTML = titulo;
+function elements(des, time, name, services, memory) {
     document.getElementById('description').innerHTML = des;
-    document.getElementById('time').innerHTML = time;
+    document.getElementById('time').innerHTML = getTime(time);
     document.getElementById('name').innerHTML = name;
     document.getElementById('services').innerHTML = services;
-    document.getElementById('memory').innerHTML = memory;
+    document.getElementById('memory').innerHTML = memory / 1000000 + ' (GB)';
 }
 
-// Graficas
-
-
-var cjs = document.getElementById("chart1").getContext("2d");
-var cjs2 = document.getElementById("chart2").getContext("2d");
-
-var salidas = [125, 132, 156, 145];
-var names = ['ram', 'procesador', 'procesos', 'memoria'];
-
-graphState('Ram', cjs);
-graphState('Procesador', cjs2);
-
-function graphState(name, nameChart) {
+// Grafica
+function graphState(name, data3, data2, nameChart) {
     var stackedLine = new Chart(nameChart, {
         type: 'line',
         data: {
-            labels: ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'],
+            labels: data3.map(item => item),
             datasets: [{
                 label: name,
-                data: [100, 9, 15, 11, 10, 16, 8, 7, 14, 1, 9, 15, 2, 14, 3, 19, 1, 20],
+                borderColor: 'Green',
+                //backgroundColor: 'White',
+                hoverBorderColor: 'green',
+                data: data2.map(item => item),
             }]
         },
         options: {
@@ -82,15 +91,26 @@ function graphState(name, nameChart) {
                     stacked: true
                 }]
             },
+            tooltips: {
+                backgroundColor: '#0584f6'
+            }
         }
     });
 }
 
-
-function ocultar() {
-    document.getElementById('panel').style.display = 'none';
+// Show panel
+function mostrar(name) {
+    document.getElementById(name).style.display = 'block';
 }
 
-function mostrar() {
-    document.getElementById('panel').style.display = 'block';
+// Time
+function pad2(number) { number = '0' + number; return number.substr(number.length - 2); }
+
+function getTime(tTime) {
+    var seconds = tTime / 100;
+    var hour = Math.floor(seconds / 3600);
+    var minute = Math.floor((seconds / 60) % 60);
+    var second = seconds % 60;
+    var result = pad2(hour) + ':' + pad2(minute) + ':' + pad2(second);
+    return result;
 }

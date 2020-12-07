@@ -11,7 +11,7 @@
     <title>SMNP Demo app</title>
 </head>
 
-<body>
+<body class="container">
     <div class="container">
         <div class="row">
             <div class="col-12 text-center mt-5">
@@ -20,31 +20,31 @@
                 </span>
             </div>
             <div class="col-12 row pt-5">
-                <div class="card col-md-6">
+                <div class="card col-md-6 padre">
                     <img src="./assets/Ubuntu-logo.png" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">Ubuntu Linux Pc</h5>
-                        <span id="ubuntu" class="btn btn-primary">Monitear</span>
+                        <span id="ubuntu" class="btn btn-primary">Monitorear</span>
                     </div>
                 </div>
-                <div class="card col-md-6">
+                <div class="card col-md-6 padre">
                     <img src="./assets/windows-10-logo.jpg" class=" card-img-top " alt="... ">
                     <div class="card-body ">
                         <h5 class="card-title ">Windows 10 Pc</h5>
-                        <span id="windows" class="btn btn-primary">Monitear</span>
+                        <span id="windows" class="btn btn-primary">Monitorear</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div id="panel">
-        <h1 id="title" class="mx-5 my-4 text-secondary "></h1>
+    <div id="panel" class="container">
+        <h4 id="title" class=" my-5"></h4>
 
         <div class="container">
             <img src="assets/pc.png" alt="PC" style="width: 40%;" class="rounded mx-auto d-block">
-            <h1 class="text-center my-2 text-primary" id="name">PC Name</h1>
+            <h3 class="text-center my-2 text-primary" id="name">PC Name</h3>
         </div>
-        <div class="container alert alert-success my-4">
+        <div class="container card card-body my-4 radius">
             <div class="my-4 row">
 
                 <div class="w-100"></div>
@@ -71,20 +71,20 @@
                 </div>
             </div>
         </div>
-        <div class="my-4 container">
+
+        <div class="my-4 container card card-body">
             <div class="row">
-                <div class="col-2">
-                    <p id="valor"></p>
-                    <h6><strong>CPU</strong></h6>
+                <div class="col-1 padre">
+                    <h6 id="cpu"></h6>
                 </div>
-                <div class="col-10">
-                    <canvas id="chart1" width="320" height="80"></canvas>
+                <div class="col-11">
+                    <canvas id="chart1" width="250" height="100"></canvas>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-2">
-                    <h6><strong>RAM</strong></h6>
+                <div class="col-2 padre">
+                    <h6 id="ram"></h6>
                 </div>
                 <div class="col-10">
                     <canvas id="chart2" width="320" height="80"></canvas>

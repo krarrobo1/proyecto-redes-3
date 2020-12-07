@@ -1,3 +1,20 @@
 img {
     max-width: 30%;
 }
+
+body {
+    background-color: whitesmoke;
+}
+
+.padre {
+    display: flex;
+    align-items: center;
+}
+
+.body_icon {
+    width: 15%;
+}
+
+.radius {
+    border-radius: 1em;
+}
