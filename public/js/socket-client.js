@@ -3,13 +3,13 @@
  */
 
 let socket = io();
-
 let devices = {};
 
 socket.on('connect', function() {
     console.log('Conectado al servidor');
 });
 
+ocultar();
 
 document.getElementById('ubuntu').addEventListener('click', () => {
     sendInfoRequest('ubuntu');
@@ -34,19 +34,24 @@ socket.on('memory', (data) => {
 
 
 function sendInfoRequest(name) {
+    mostrar();
     let req = {
         name
     };
     socket.emit('infoRequest', req, (response) => {
         console.log(response);
         devices[name] = response;
-        document.getElementById("title").innerHTML = ('<strong>SNMP SERVER - WINDOWS');
-        document.getElementById('description').innerHTML = response.sysDescr;
-        document.getElementById('time').innerHTML = response.sysUpTime;
-        document.getElementById('name').innerHTML = response.sysName;
-        document.getElementById('services').innerHTML = response.sysServices;
-        document.getElementById('memory').innerHTML = response.totalRam;
+        elements(('<strong>SNMP SERVER'), response.sysDescr, response.sysUpTime, response.sysName, services, response.totalRam);
     });
+}
+
+function elements(titulo, des, time, name, services, memory) {
+    document.getElementById("title").innerHTML = titulo;
+    document.getElementById('description').innerHTML = des;
+    document.getElementById('time').innerHTML = time;
+    document.getElementById('name').innerHTML = name;
+    document.getElementById('services').innerHTML = services;
+    document.getElementById('memory').innerHTML = memory;
 }
 
 // Graficas
@@ -77,8 +82,15 @@ function graphState(name, nameChart) {
                     stacked: true
                 }]
             },
-            //borderColor: { Color: 'rgba(244, 244, 244, 1)' },
-
         }
     });
+}
+
+
+function ocultar() {
+    document.getElementById('panel').style.display = 'none';
+}
+
+function mostrar() {
+    document.getElementById('panel').style.display = 'block';
 }
