@@ -21,10 +21,13 @@ document.getElementById('windows').addEventListener('click', () => {
 // Event listeners...
 socket.on('cpu', (data) => {
     console.log(data);
+
+    //document.getElementById('valor').innerHTML = data.cpuUsagePercentage;
 });
 
 socket.on('memory', (data) => {
     console.log(data);
+
 });
 
 
@@ -37,11 +40,17 @@ function sendInfoRequest(name) {
     socket.emit('infoRequest', req, (response) => {
         console.log(response);
         devices[name] = response;
+        document.getElementById("title").innerHTML = ('<strong>SNMP SERVER - WINDOWS');
+        document.getElementById('description').innerHTML = response.sysDescr;
+        document.getElementById('time').innerHTML = response.sysUpTime;
+        document.getElementById('name').innerHTML = response.sysName;
+        document.getElementById('services').innerHTML = response.sysServices;
+        document.getElementById('memory').innerHTML = response.totalRam;
     });
 }
 
 // Graficas
-document.getElementById("title").innerHTML = ('<strong>SNMP SERVER - WINDOWS</strong>');
+
 
 var cjs = document.getElementById("chart1").getContext("2d");
 var cjs2 = document.getElementById("chart2").getContext("2d");

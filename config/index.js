@@ -1,6 +1,6 @@
 module.exports = {
     COMMUNITY_STRING: 'public',
-    PORT: 3300,
+    PORT: 8080,
     devices: {
         ubuntu: {
             ip: '127.0.0.1',
