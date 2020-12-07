@@ -68,7 +68,7 @@ function elements(des, time, name, services, memory) {
     document.getElementById('time').innerHTML = getTime(time);
     document.getElementById('name').innerHTML = name;
     document.getElementById('services').innerHTML = services;
-    document.getElementById('memory').innerHTML = memory / 1000000 + ' (GB)';
+    document.getElementById('memory').innerHTML = memory;
 }
 
 // Grafica

@@ -1,3 +1,4 @@
+const { Version1 } = require("net-snmp");
 module.exports = {
     COMMUNITY_STRING: 'public',
     PORT: 8080,
@@ -7,10 +8,21 @@ module.exports = {
             community: 'public'
         },
         windows: {
-            //ip: '192.168.1.25',
-            ip: 'localhost',
+            ip: '192.168.1.25',
+            // ip: 'localhost',
             community: 'public'
-        }
+        },
+    },
+    SNMP_CONFIG: {
+        port: 161,
+        retries: 1,
+        timeout: 5000,
+        backoff: 1.0,
+        transport: "udp4",
+        trapPort: 162,
+        version: Version1,
+        backwardsGetNexts: true,
+        idBitsSize: 32
     },
     oids: [{
             name: 'sysDescr',
