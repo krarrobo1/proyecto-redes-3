@@ -8,7 +8,7 @@ module.exports = {
             community: 'public'
         },
         windows: {
-            ip: '192.168.1.25',
+            ip: '192.168.1.11',
             // ip: 'localhost',
             community: 'public'
         },
