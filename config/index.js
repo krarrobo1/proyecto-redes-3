@@ -1,4 +1,5 @@
-const { Version1 } = require("net-snmp");
+const { Version1 } = require('net-snmp');
+
 module.exports = {
     COMMUNITY_STRING: 'public',
     PORT: 8080,
@@ -8,7 +9,7 @@ module.exports = {
             community: 'public'
         },
         windows: {
-            ip: '192.168.1.11',
+            ip: '192.168.1.25',
             // ip: 'localhost',
             community: 'public'
         },

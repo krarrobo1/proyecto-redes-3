@@ -1,7 +1,8 @@
 const snmp = require("net-snmp");
 const { io } = require('../app');
-const { devices, oids, SNMP_CONFIG } = require("../config");
+const { devices, oids, SNMP_CONFIG, SNMPV3_CONFIG } = require("../config");
 const { timeTickConverter, kilobytesToGb } = require('../helpers/utils');
+const RsaService = require('./RsaService');
 
 module.exports = class SessionManager {
 
@@ -21,7 +22,7 @@ module.exports = class SessionManager {
             if (err) {
                 console.log(`ERROR: ${err}`);
             } else {
-                let temp = {};
+                let clientData = {};
                 varbinds.forEach((element, idx) => {
                     if (snmp.isVarbindError(element)) {
                         console.log(snmp.varbindError(element));
@@ -32,10 +33,11 @@ module.exports = class SessionManager {
                         if (oidNames[idx] === 'totalRam') {
                             element.value = kilobytesToGb(element.value);
                         }
-                        temp[oidNames[idx]] = element.value;
+                        clientData[oidNames[idx]] = element.value;
                     }
                 });
-                cb(temp);
+                let encryptedData = RsaService.encryptData(clientData);
+                cb(encryptedData);
             }
         });
     }

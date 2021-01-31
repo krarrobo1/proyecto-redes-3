@@ -10,16 +10,15 @@ socket.on('connect', function() {
     console.log('Conectado al servidor');
 });
 
-//ocultar('panel');
 
 document.getElementById('ubuntu').addEventListener('click', () => {
     sendInfoRequest('ubuntu');
 });
+
 document.getElementById('windows').addEventListener('click', () => {
     sendInfoRequest('windows');
 });
 
-// Event listeners...
 
 var data2 = [];
 var data3 = [];
@@ -51,9 +50,11 @@ function sendInfoRequest(name) {
     let req = {
         name
     };
-    socket.emit('infoRequest', req, (response) => {
-        console.log(response);
-        devices[name] = response;
+    socket.emit('infoRequest', req, async(response) => {
+        console.log('Encrypted: ', response);
+        let decrypted = crypt.decrypt(response);
+        console.log("Decrypt: ", decrypted);
+        devices[name] = decrypted;
         elements(response.sysDescr, response.sysUpTime, response.sysName, response.sysServices, response.totalRam);
     });
     if (name == 'ubuntu') {
